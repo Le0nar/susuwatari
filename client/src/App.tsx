@@ -1,18 +1,27 @@
-import { useEffect } from "react"
+import { useState } from "react"
 import { initWS } from "./utils/init-ws";
-import { handleKeypress } from "./utils/handle-keypress";
-
-const ws = initWS()
+import { changePosition } from "./utils/change-position";
 
 function App() {
+  const [name, setName] = useState("")
+  const [isStarted, setIsStarted] = useState(false)
 
-  useEffect(() => {
-    document.addEventListener("keypress", (event) => handleKeypress(event, ws));
-  }, [])
 
   return (
     <div>
-      CONTENT
+      {!isStarted && (
+      <>
+        <input type="text" value={name} onChange={(event) => setName(event.target.value)} />
+        <button onClick={() => {
+          setIsStarted(true)
+          const ws = initWS(name)
+          document.addEventListener("keypress", (event) => changePosition(event, ws, name));
+        }}>
+          Старт
+        </button>
+      </>
+      )}
+
     </div>
   )
 }

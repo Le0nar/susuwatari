@@ -1,49 +1,16 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"net/http"
 
-	"github.com/gorilla/websocket"
+	"github.com/Le0nar/susuwatari/internal/handler"
+	"github.com/Le0nar/susuwatari/internal/service"
 )
 
 func main() {
-	http.HandleFunc("/", handler)
+	srvc := service.NewService()
+	handlr := handler.NewHandler(srvc)
+
+	http.HandleFunc("/", handlr.HandleMain)
 	http.ListenAndServe(":8080", nil)
-}
-
-// var upgrader = websocket.Upgrader{
-// ReadBufferSize:  1024,
-// WriteBufferSize: 1024,
-// }
-
-var upgrader = websocket.Upgrader{
-	CheckOrigin: func(r *http.Request) bool {
-		return true // Пропускаем любой запрос
-	},
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-}
-
-func handler(w http.ResponseWriter, r *http.Request) {
-	conn, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
-	for {
-		messageType, p, err := conn.ReadMessage()
-		if err != nil {
-			log.Println(err)
-			return
-		}
-		if err := conn.WriteMessage(messageType, p); err != nil {
-			log.Println(err)
-			return
-		}
-
-		fmt.Println(string(p))
-	}
 }
