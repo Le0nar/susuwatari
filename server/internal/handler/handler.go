@@ -6,12 +6,13 @@ import (
 	"net/http"
 
 	"github.com/Le0nar/susuwatari/internal/message"
+	"github.com/Le0nar/susuwatari/internal/user"
 	"github.com/gorilla/websocket"
 )
 
 type service interface {
-	AddUser(name string)
-	ChangePosition(name string, direction string)
+	AddUser(name string) []user.User
+	ChangePosition(name string, direction string) []user.User
 }
 
 type Handler struct {
@@ -49,6 +50,7 @@ func (h *Handler) HandleMain(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		// TODO: mb use messageType for write and get message
 		var dto message.BasicMessageDto
 
 		err = json.Unmarshal(p, &dto)
@@ -57,37 +59,38 @@ func (h *Handler) HandleMain(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		// TODO: отправлять сообщения всем клиентам
 		switch dto.Type {
 		case "AddUser":
-			h.handleAddUser(p)
-			// return
+			users := h.handleAddUser(p)
+			conn.WriteJSON(users)
 		case "ChangePosition":
-			h.handleChangePosition(p)
-			// return
+			users := h.handleChangePosition(p)
+			conn.WriteJSON(users)
 		}
 	}
 }
 
-func (h *Handler) handleAddUser(mes []byte) {
+func (h *Handler) handleAddUser(mes []byte) []user.User {
 	var dto message.AddUserDto
 
 	err := json.Unmarshal(mes, &dto)
 	if err != nil {
 		log.Println(err)
-		return
+		return nil
 	}
 
-	h.service.AddUser(dto.Name)
+	return h.service.AddUser(dto.Name)
 }
 
-func (h *Handler) handleChangePosition(mes []byte) {
+func (h *Handler) handleChangePosition(mes []byte) []user.User {
 	var dto message.ChangePositionDto
 
 	err := json.Unmarshal(mes, &dto)
 	if err != nil {
 		log.Println(err)
-		return
+		return nil
 	}
 
-	h.service.ChangePosition(dto.Name, dto.Direction)
+	return h.service.ChangePosition(dto.Name, dto.Direction)
 }

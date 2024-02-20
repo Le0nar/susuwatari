@@ -1,8 +1,6 @@
 package service
 
 import (
-	"fmt"
-
 	"github.com/Le0nar/susuwatari/internal/user"
 )
 
@@ -14,15 +12,15 @@ func NewService() *Serivce {
 	return &Serivce{Users: make(map[string]user.User)}
 }
 
-func (s *Serivce) AddUser(name string) {
+func (s *Serivce) AddUser(name string) []user.User {
 	user := user.User{Name: name}
 
 	s.Users[name] = user
 
-	fmt.Printf("s.Users: %v\n", s.Users)
+	return getUsers(s.Users)
 }
 
-func (s *Serivce) ChangePosition(name string, direction string) {
+func (s *Serivce) ChangePosition(name string, direction string) []user.User {
 	user := s.Users[name]
 
 	switch direction {
@@ -38,9 +36,16 @@ func (s *Serivce) ChangePosition(name string, direction string) {
 
 	s.Users[name] = user
 
-	fmt.Printf("s.Users: %v\n", s.Users)
+	return getUsers(s.Users)
 }
 
-func (s *Serivce) RemoveUser() {
+// TODO: rename
+func getUsers(usersMap map[string]user.User) []user.User {
+	usersSlice := make([]user.User, 0, len(usersMap))
 
+	for _, value := range usersMap {
+		usersSlice = append(usersSlice, value)
+	}
+
+	return usersSlice
 }
