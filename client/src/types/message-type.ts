@@ -1,4 +1,4 @@
 export enum MessageType {
     AddUser =  "AddUser",
-    ChangeDirection =  "ChangeDirection",
+    ChangePosition =  "ChangePosition",
 } 

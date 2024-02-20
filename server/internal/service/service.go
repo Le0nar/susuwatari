@@ -7,25 +7,40 @@ import (
 )
 
 type Serivce struct {
-	Users []user.User
+	Users map[string]user.User
 }
 
 func NewService() *Serivce {
-	return &Serivce{Users: make([]user.User, 0)}
+	return &Serivce{Users: make(map[string]user.User)}
 }
 
 func (s *Serivce) AddUser(name string) {
 	user := user.User{Name: name}
 
-	s.Users = append(s.Users, user)
+	s.Users[name] = user
+
+	fmt.Printf("s.Users: %v\n", s.Users)
+}
+
+func (s *Serivce) ChangePosition(name string, direction string) {
+	user := s.Users[name]
+
+	switch direction {
+	case "top":
+		user.Position.Y++
+	case "right":
+		user.Position.X++
+	case "bottom":
+		user.Position.Y--
+	case "left":
+		user.Position.X--
+	}
+
+	s.Users[name] = user
 
 	fmt.Printf("s.Users: %v\n", s.Users)
 }
 
 func (s *Serivce) RemoveUser() {
-
-}
-
-func (s *Serivce) ChangePosition(name string, direction string) {
 
 }

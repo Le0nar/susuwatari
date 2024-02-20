@@ -11,7 +11,7 @@ export const changePosition = (event: KeyboardEvent, ws: WebSocket, name: string
     const sendingInfo  = {
         name,
         direction: direction,
-        type: MessageType.ChangeDirection,
+        type: MessageType.ChangePosition,
     }
 
     ws.send(JSON.stringify(sendingInfo))
