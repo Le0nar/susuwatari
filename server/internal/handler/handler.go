@@ -30,6 +30,7 @@ func NewHandler(s service) *Handler {
 	return &Handler{service: s}
 }
 
+// TODO: rename
 func (h *Handler) HandleMain(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -56,10 +57,14 @@ func (h *Handler) HandleMain(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		if dto.Type == "AddUser" {
+		switch dto.Type {
+		case "AddUser":
 			h.handleAddUser(p)
+			// return
+		case "ChangePosition":
+			h.handleChangePosition(p)
+			// return
 		}
-
 	}
 }
 
@@ -73,4 +78,16 @@ func (h *Handler) handleAddUser(mes []byte) {
 	}
 
 	h.service.AddUser(dto.Name)
+}
+
+func (h *Handler) handleChangePosition(mes []byte) {
+	var dto message.ChangePositionDto
+
+	err := json.Unmarshal(mes, &dto)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	h.service.ChangePosition(dto.Name, dto.Direction)
 }
