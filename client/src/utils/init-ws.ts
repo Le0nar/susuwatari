@@ -1,4 +1,4 @@
-import { MessageType } from "../types/message-type";
+import { MessageType } from "../enum/message-type";
 
 export const initWS = (name: string): WebSocket => {
     const ws = new WebSocket("ws://localhost:8080")
