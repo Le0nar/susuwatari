@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { initWS } from "./utils/init-ws";
 import { changePosition } from "./utils/change-position";
+import { PlayingField } from "./components/playing-field/playing-field";
 
 function App() {
   const [name, setName] = useState("")
@@ -9,19 +10,21 @@ function App() {
 
   return (
     <div>
-      {!isStarted && (
-      <>
-        <input type="text" value={name} onChange={(event) => setName(event.target.value)} />
-        <button onClick={() => {
-          setIsStarted(true)
-          const ws = initWS(name)
-          document.addEventListener("keypress", (event) => changePosition(event, ws, name));
-        }}>
-          Старт
-        </button>
-      </>
-      )}
-
+      {isStarted 
+        ? <PlayingField /> 
+        : (
+          <>
+            <input type="text" value={name} onChange={(event) => setName(event.target.value)} />
+            <button onClick={() => {
+              setIsStarted(true)
+              const ws = initWS(name)
+              document.addEventListener("keypress", (event) => changePosition(event, ws, name));
+            }}>
+              Старт
+            </button>
+          </>
+        )
+      }
     </div>
   )
 }

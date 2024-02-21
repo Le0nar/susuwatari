@@ -1,5 +1,5 @@
-import { Direction } from '../types/direction'
-import { MessageType } from '../types/message-type'
+import { Direction } from '../enum/direction'
+import { MessageType } from '../enum/message-type'
 
 export const changePosition = (event: KeyboardEvent, ws: WebSocket, name: string): void => {
     const direction = getDirection(event.key)

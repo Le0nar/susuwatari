@@ -1,11 +1,11 @@
 package user
 
 type User struct {
-	Name     string
-	Position Position
+	Name     string   `json:"name"`
+	Position Position `json:"position"`
 }
 
 type Position struct {
-	X int
-	Y int
+	X int `json:"x"`
+	Y int `json:"y"`
 }
