@@ -16,7 +16,9 @@ type service interface {
 }
 
 type Handler struct {
-	service service
+	// TODO: mb use map
+	connList []*websocket.Conn
+	service  service
 }
 
 var upgrader = websocket.Upgrader{
@@ -59,14 +61,17 @@ func (h *Handler) HandleMain(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// TODO: отправлять сообщения всем клиентам
+		h.connList = append(h.connList, conn)
+
 		switch dto.Type {
 		case "AddUser":
 			users := h.handleAddUser(p)
-			conn.WriteJSON(users)
+
+			sendMessageToUsers(h.connList, users)
 		case "ChangePosition":
 			users := h.handleChangePosition(p)
-			conn.WriteJSON(users)
+
+			sendMessageToUsers(h.connList, users)
 		}
 	}
 }
@@ -93,4 +98,13 @@ func (h *Handler) handleChangePosition(mes []byte) []user.User {
 	}
 
 	return h.service.ChangePosition(dto.Name, dto.Direction)
+}
+
+func sendMessageToUsers(connList []*websocket.Conn, mes interface{}) {
+	for _, conn := range connList {
+		err := conn.WriteJSON(mes)
+		if err != nil {
+			log.Println(err)
+		}
+	}
 }
