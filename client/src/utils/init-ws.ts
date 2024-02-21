@@ -5,6 +5,7 @@ export const initWS = (name: string): WebSocket => {
     ws.onopen = () => {
         console.log("Successfully Connected");
 
+        // Adding user
         const sendingInfo  = {
             name,
             type: MessageType.AddUser,
