@@ -1,8 +1,6 @@
 package service
 
 import (
-	"fmt"
-
 	"github.com/Le0nar/susuwatari/internal/user"
 )
 
@@ -19,26 +17,7 @@ func (s *Serivce) AddUser(name string) []user.User {
 
 	s.Users[name] = user
 
-	fmt.Printf("user: %v\n", user)
-}
-
-func (s *Serivce) ChangePosition(name string, direction string) {
-	user := s.Users[name]
-
-	switch direction {
-	case "top":
-		user.Position.Y++
-	case "right":
-		user.Position.X++
-	case "bottom":
-		user.Position.Y--
-	case "left":
-		user.Position.X--
-	}
-
-	s.Users[name] = user
-
-	fmt.Printf("user: %v\n", user)
+	return getUsers(s.Users)
 }
 
 func (s *Serivce) ChangePosition(name string, direction string) []user.User {
